@@ -20,20 +20,30 @@ import {
 
 class Header extends Component {
   showTrending(show) {
-    if (!show) return;
+    const {
+      trend,
+      page,
+      mouseIn,
+      totalPage,
+      changePage,
+      handleMouseEnter,
+      handleMouseLeave
+    } = this.props;
+
+    if (!show && !mouseIn) return;
+
+    const arr = trend.toJS();
+    let shouldShow = [];
+    for (let i = (page - 1) * 10; i < page * 10; i++) {
+      if (arr[i]) shouldShow.push(<SearchInfoItem key={i}>{arr[i]}</SearchInfoItem>);
+    }
     return (
-      <SearchInfo>
+      <SearchInfo onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         <SearchInfoTitle>
           热门搜索
-        <SearchInfoSwith>换一批</SearchInfoSwith>
+        <SearchInfoSwith onClick={() => changePage(page, totalPage)}>换一批</SearchInfoSwith>
         </SearchInfoTitle>
-        <SearchInfoList>
-          {
-            this.props.trend.map((item, index) => (
-              <SearchInfoItem key={index}>{item}</SearchInfoItem>
-            ))
-          }
-        </SearchInfoList>
+        <SearchInfoList>{shouldShow}</SearchInfoList>
       </SearchInfo>
     );
   }
@@ -85,7 +95,10 @@ class Header extends Component {
 const mapStateToProps = (state) => {
   return {
     focus: state.getIn(['header', 'focus']),
+    mouseIn: state.getIn(['header', 'mouseIn']),
     trend: state.getIn(['header', 'trend']),
+    page: state.getIn(['header', 'page']),
+    totalPage: state.getIn(['header', 'totalPage']),
   }
 };
 
@@ -98,6 +111,20 @@ const mapDispatchToProps = (dispatch) => {
 
     handleInputBlur() {
       dispatch(actionCreators.focusBlur());
+    },
+
+    handleMouseEnter() {
+      dispatch(actionCreators.mouseEnter());
+    },
+
+    handleMouseLeave() {
+      dispatch(actionCreators.mouseLeave());
+    },
+
+    changePage(page, totalPage) {
+      console.log('????', page, totalPage);
+      const nextPage = page === totalPage ? 1 : page + 1;
+      dispatch(actionCreators.changePage(nextPage));
     }
   }
 };

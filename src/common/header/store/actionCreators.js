@@ -11,9 +11,23 @@ const focusBlur = () => ({
   type: TYPES.SEARCH_BLUR,
 });
 
+const mouseEnter = () => ({
+  type: TYPES.MOUSE_ENTER,
+});
+
+const mouseLeave = () => ({
+  type: TYPES.MOUSE_LEAVE,
+});
+
 const setTrend = (data) => ({
   type: TYPES.SET_TREND,
-  data: fromJS(data)
+  data: fromJS(data),
+  totalPage: Math.ceil(data.length / 10)
+});
+
+const changePage = (nextPage) => ({
+  type: TYPES.CHANGE_PAGE,
+  nextPage
 });
 
 const getTrend = () => {
@@ -30,4 +44,7 @@ export {
   focusOn,
   focusBlur,
   getTrend,
+  mouseEnter,
+  mouseLeave,
+  changePage
 }

@@ -3,7 +3,10 @@ import { fromJS } from 'immutable';
 
 const defaultState = fromJS({
 	focus: false,
-	trend: []
+	mouseIn: false,
+	trend: [],
+	page: 1,
+	totalPage: 1
 });
 
 // reducer 可以接收state但是不能修改
@@ -13,9 +16,18 @@ export default (state = defaultState, action) => {
 		case TYPES.SEARCH_FOCUS:
 			return state.set('focus', true);
 		case TYPES.SEARCH_BLUR:
-      return state.set('focus', false);
+			return state.set('focus', false);
+		case TYPES.MOUSE_ENTER:
+			return state.set('mouseIn', true);
+		case TYPES.MOUSE_LEAVE:
+			return state.set('mouseIn', false);
 		case TYPES.SET_TREND:
-			return state.set('trend', action.data);
+			return state.merge({
+				trend: action.data,
+				totalPage: action.totalPage
+			});
+		case TYPES.CHANGE_PAGE:
+			return state.set('page', action.nextPage);
 		default:
 			return state;
 	}
