@@ -41,7 +41,9 @@ class Header extends Component {
       <SearchInfo onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         <SearchInfoTitle>
           热门搜索
-        <SearchInfoSwith onClick={() => changePage(page, totalPage)}>换一批</SearchInfoSwith>
+        <SearchInfoSwith onClick={() => changePage(page, totalPage, this.spinIcon)}>
+            <i ref={(icon) => { this.spinIcon = icon }} className='iconfont spin'>&#xe851;</i>换一批
+        </SearchInfoSwith>
         </SearchInfoTitle>
         <SearchInfoList>{shouldShow}</SearchInfoList>
       </SearchInfo>
@@ -49,7 +51,7 @@ class Header extends Component {
   }
 
   render() {
-    const { focus, handleInputFocus, handleInputBlur } = this.props;
+    const { focus, trend, handleInputFocus, handleInputBlur } = this.props;
     return (
       <HeaderWrapper>
         <Logo href='/' />
@@ -68,12 +70,12 @@ class Header extends Component {
             >
               <NavSearch
                 className={focus ? 'focused' : ''}
-                onFocus={handleInputFocus}
+                onFocus={() => handleInputFocus(trend)}
                 onBlur={handleInputBlur}
               >
               </NavSearch>
             </CSSTransition>
-            <i className={focus ? 'focused iconfont' : 'iconfont'}>&#xe60a;</i>
+            <i className={focus ? 'focused iconfont zoom' : 'iconfont zoom'}>&#xe60a;</i>
             {this.showTrending(focus)}
           </SearchWrapper>
           <NavItem className='right'>登录</NavItem>
@@ -104,9 +106,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleInputFocus() {
+    handleInputFocus(trend) {
+      // immutable 要用size取元素个数
+      trend.size < 1 && dispatch(actionCreators.getTrend());
       dispatch(actionCreators.focusOn());
-      dispatch(actionCreators.getTrend());
     },
 
     handleInputBlur() {
@@ -121,8 +124,11 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(actionCreators.mouseLeave());
     },
 
-    changePage(page, totalPage) {
-      console.log('????', page, totalPage);
+    changePage(page, totalPage, spin) {
+      let originAngle = spin.style.transform.replace(/[^0-9]/ig, '');
+      originAngle = originAngle ? Number(originAngle) : 0;
+      spin.style.transform = `rotate(${originAngle + 360}deg)`;
+
       const nextPage = page === totalPage ? 1 : page + 1;
       dispatch(actionCreators.changePage(nextPage));
     }
