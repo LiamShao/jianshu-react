@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
-import {
-  TopicWrapper,
-  TopicItem,
-} from '../style';
+import { TopicWrapper, TopicItem } from '../style';
 
 class Topic extends Component {
   render() {
@@ -25,12 +21,8 @@ class Topic extends Component {
 }
 
 
-const mapStateToProps = (state) => ({
+const mapState = (state) => ({
   list: state.getIn(['home', 'topicList'])
 });
 
-// const mapDispatchToProps = () => {
-
-// };
-
-export default connect(mapStateToProps, null)(Topic);
+export default connect(mapState, null)(Topic);
