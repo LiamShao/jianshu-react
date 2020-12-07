@@ -5,7 +5,7 @@ const initHomeAction = ({ topicList, articleList, recommand }) => ({
   type: TYPES.INIT_HOME,
   topicList,
   articleList,
-  recommand
+  recommand,
 });
 
 export const initHome = () => {
@@ -15,3 +15,16 @@ export const initHome = () => {
     });
   }
 };
+
+const moreArticleAction = (articleList) => ({
+  type: TYPES.LOAD_MORE_ARTICLE,
+  articleList,
+});
+
+export const getMoreArticle = () => {
+  return (dispatch) => {
+    axios.get('/api/homeList.json').then(res => {
+      dispatch(moreArticleAction(res.data.data));
+    });
+  }
+}

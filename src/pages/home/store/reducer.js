@@ -20,6 +20,8 @@ export default (state = defaultState, action) => {
         articleList: fromJS(action.articleList),
         recommand: fromJS(action.recommand),
       });
+    case TYPES.LOAD_MORE_ARTICLE:
+      return state.set('articleList', fromJS([...state.get('articleList').toJS(), ...action.articleList]));
     default:
       return state;
   }

@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { ListItem, ListInfo } from '../style';
+import { actionCreators } from '../store';
+import { ListItem, ListInfo, LoadMore } from '../style';
 
 class List extends Component {
   render() {
-    const { list } = this.props;
+    const { list, loadMoreArticle } = this.props;
     return (
       <div>
         {
-          list.map(item => (
-            <ListItem key={item.get('id')}>
+          list.map((item, index) => (
+            <ListItem key={index}>
               <ListInfo>
                 <h3 className='title'>{item.get('title')}</h3>
                 <p className='desc'>{item.get('desc')}</p>
@@ -18,6 +19,7 @@ class List extends Component {
             </ListItem>
           ))
         }
+        <LoadMore onClick={loadMoreArticle}>阅读更多</LoadMore>
       </div>
     )
   }
@@ -27,4 +29,10 @@ const mapState = (state) => ({
   list: state.getIn(['home', 'articleList'])
 });
 
-export default connect(mapState, null)(List);
+const mapDispatch = (dispatch) => ({
+  loadMoreArticle() {
+    dispatch(actionCreators.getMoreArticle());
+  }
+});
+
+export default connect(mapState, mapDispatch)(List);
