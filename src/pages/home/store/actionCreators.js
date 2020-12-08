@@ -27,4 +27,9 @@ export const getMoreArticle = () => {
       dispatch(moreArticleAction(res.data.data));
     });
   }
-}
+};
+
+export const showScrollButton = (show) => ({
+  type: TYPES.SHOW_SCROLL_BUTTON,
+  show,
+});

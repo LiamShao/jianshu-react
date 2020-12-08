@@ -1,4 +1,5 @@
 export default {
   INIT_HOME: 'home/INIT_HOME',
+  SHOW_SCROLL_BUTTON: 'home/SHOW_SCROLL_BUTTON',
   LOAD_MORE_ARTICLE: 'home/LOAD_MORE_ARTICLE',
 };

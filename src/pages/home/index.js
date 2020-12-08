@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { actionCreators } from "./store";
-import { HomeWrapper, HomeLeft, HomeRight } from './style';
+import { HomeWrapper, HomeLeft, HomeRight, BackTop } from './style';
 
 import Topic from './components/Topic';
 import List from './components/List';
@@ -21,19 +21,43 @@ class Home extends Component {
           <Recommand></Recommand>
           <Writer></Writer>
         </HomeRight>
+        {
+          this.props.showScroll ? <BackTop onClick={this.handleScrollTop}>^</BackTop> : ''
+        }
       </HomeWrapper>
     )
   }
 
   componentDidMount() {
     this.props.getHomeData();
+    this.bindEvent();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.props.changeBackTop);
+  }
+
+  handleScrollTop() {
+    window.scrollTo(0, 0);
+  }
+
+  bindEvent() {
+    window.addEventListener('scroll', this.props.changeBackTop);
   }
 }
+
+const mapState = (state) => ({
+  showScroll: state.getIn(['home', 'showScroll'])
+});
 
 const mapDispatch = (dispatch) => ({
   getHomeData() {
     dispatch(actionCreators.initHome());
+  },
+  changeBackTop(e) {
+    const show = document.documentElement.scrollTop > 100 ? true : false;
+    dispatch(actionCreators.showScrollButton(show));
   }
 });
 
-export default connect(null, mapDispatch)(Home);
+export default connect(mapState, mapDispatch)(Home);

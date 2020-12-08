@@ -2,6 +2,7 @@ import { fromJS } from 'immutable';
 import TYPES from './constants';
 
 const defaultState = fromJS({
+  showScroll: false,
   // 主题
   topicList: [],
   // 文章列表
@@ -20,6 +21,8 @@ export default (state = defaultState, action) => {
         articleList: fromJS(action.articleList),
         recommand: fromJS(action.recommand),
       });
+    case TYPES.SHOW_SCROLL_BUTTON:
+      return state.set('showScroll', action.show);
     case TYPES.LOAD_MORE_ARTICLE:
       return state.set('articleList', fromJS([...state.get('articleList').toJS(), ...action.articleList]));
     default:

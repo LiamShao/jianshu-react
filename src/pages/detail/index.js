@@ -1,9 +1,27 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { DetailWrapper, Title, Content } from './style';
 
 class Detail extends Component {
   render() {
-    return <div>Detail</div>
+    return (
+      <DetailWrapper>
+        <Title>{this.props.title}</Title>
+        <Content dangerouslySetInnerHTML={{__html: this.props.htmlContent}} />
+      </DetailWrapper>
+    )
+  }
+
+  componentDidMount() {
+    // 获取动态路由携带的参数
+    console.log(this.props.match.params);
+    // this.props.location.search
   }
 }
 
-export default Detail;
+const mapState = (state) => ({
+  title: state.getIn(['detail', 'title']),
+  htmlContent: state.getIn(['detail', 'htmlContent']),
+});
+
+export default connect(mapState, null)(Detail);
