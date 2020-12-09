@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { DetailWrapper, Title, Content } from './style';
 
-class Detail extends Component {
+class Detail extends PureComponent {
   render() {
     return (
       <DetailWrapper>
@@ -17,11 +18,11 @@ class Detail extends Component {
     console.log(this.props.match.params);
     // this.props.location.search
   }
-}
+};
 
 const mapState = (state) => ({
   title: state.getIn(['detail', 'title']),
   htmlContent: state.getIn(['detail', 'htmlContent']),
 });
 
-export default connect(mapState, null)(Detail);
+export default connect(mapState, null)(withRouter(Detail));

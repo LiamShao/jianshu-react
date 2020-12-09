@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { actionCreators } from './store';
+import { actionCreators as loginActionCreators } from '../../pages/login/store';
+
 import { CSSTransition } from 'react-transition-group';
 import {
   HeaderWrapper,
@@ -53,7 +55,7 @@ class Header extends Component {
   }
 
   render() {
-    const { focus, trend, handleInputFocus, handleInputBlur } = this.props;
+    const { login, logout, focus, trend, handleInputFocus, handleInputBlur } = this.props;
     return (
       <HeaderWrapper>
         <Link to='/'>
@@ -82,15 +84,21 @@ class Header extends Component {
             <i className={focus ? 'focused iconfont zoom' : 'iconfont zoom'}>&#xe60a;</i>
             {this.showTrending(focus)}
           </SearchWrapper>
-          <NavItem className='right'>登录</NavItem>
+          {
+            login ?
+              <NavItem className='right' onClick={logout}>退出</NavItem>
+              : <Link to='/login'><NavItem className='right'>登录</NavItem></Link>
+          }
           <NavItem className='right'>
             <i className='iconfont'>&#xe636;</i>
           </NavItem>
         </Nav>
         <Addition>
-          <Button className='write'>
-            <i className='iconfont'>&#xe708;</i>写文章
-          </Button>
+          <Link to='/write'>
+            <Button className='write'>
+              <i className='iconfont'>&#xe708;</i>写文章
+            </Button>
+          </Link>
           <Button className='register'>注册</Button>
         </Addition>
       </HeaderWrapper>
@@ -98,45 +106,46 @@ class Header extends Component {
   }
 };
 
-const mapStateToProps = (state) => {
-  return {
-    focus: state.getIn(['header', 'focus']),
-    mouseIn: state.getIn(['header', 'mouseIn']),
-    trend: state.getIn(['header', 'trend']),
-    page: state.getIn(['header', 'page']),
-    totalPage: state.getIn(['header', 'totalPage']),
+const mapStateToProps = (state) => ({
+  focus: state.getIn(['header', 'focus']),
+  mouseIn: state.getIn(['header', 'mouseIn']),
+  trend: state.getIn(['header', 'trend']),
+  page: state.getIn(['header', 'page']),
+  totalPage: state.getIn(['header', 'totalPage']),
+  login: state.getIn(['login', 'login'])
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  handleInputFocus(trend) {
+    // immutable 要用size取元素个数
+    trend.size < 1 && dispatch(actionCreators.getTrend());
+    dispatch(actionCreators.focusOn());
+  },
+
+  handleInputBlur() {
+    dispatch(actionCreators.focusBlur());
+  },
+
+  handleMouseEnter() {
+    dispatch(actionCreators.mouseEnter());
+  },
+
+  handleMouseLeave() {
+    dispatch(actionCreators.mouseLeave());
+  },
+
+  changePage(page, totalPage, spin) {
+    let originAngle = spin.style.transform.replace(/[^0-9]/ig, '');
+    originAngle = originAngle ? Number(originAngle) : 0;
+    spin.style.transform = `rotate(${originAngle + 360}deg)`;
+
+    const nextPage = page === totalPage ? 1 : page + 1;
+    dispatch(actionCreators.changePage(nextPage));
+  },
+
+  logout() {
+    dispatch(loginActionCreators.logout());
   }
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    handleInputFocus(trend) {
-      // immutable 要用size取元素个数
-      trend.size < 1 && dispatch(actionCreators.getTrend());
-      dispatch(actionCreators.focusOn());
-    },
-
-    handleInputBlur() {
-      dispatch(actionCreators.focusBlur());
-    },
-
-    handleMouseEnter() {
-      dispatch(actionCreators.mouseEnter());
-    },
-
-    handleMouseLeave() {
-      dispatch(actionCreators.mouseLeave());
-    },
-
-    changePage(page, totalPage, spin) {
-      let originAngle = spin.style.transform.replace(/[^0-9]/ig, '');
-      originAngle = originAngle ? Number(originAngle) : 0;
-      spin.style.transform = `rotate(${originAngle + 360}deg)`;
-
-      const nextPage = page === totalPage ? 1 : page + 1;
-      dispatch(actionCreators.changePage(nextPage));
-    }
-  }
-};
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

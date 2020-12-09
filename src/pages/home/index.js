@@ -44,7 +44,7 @@ class Home extends Component {
   bindEvent() {
     window.addEventListener('scroll', this.props.changeBackTop);
   }
-}
+};
 
 const mapState = (state) => ({
   showScroll: state.getIn(['home', 'showScroll'])

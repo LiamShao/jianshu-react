@@ -12,6 +12,8 @@ export const initHome = () => {
   return (dispatch) => {
     axios.get('/api/home.json').then(res => {
       dispatch(initHomeAction(res.data.data));
+    }).catch(e => {
+      console.log(e);
     });
   }
 };
@@ -25,6 +27,8 @@ export const getMoreArticle = () => {
   return (dispatch) => {
     axios.get('/api/homeList.json').then(res => {
       dispatch(moreArticleAction(res.data.data));
+    }).catch(e => {
+      console.log(e);
     });
   }
 };
